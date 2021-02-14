@@ -21,7 +21,7 @@ namespace Football_Scores_App.Controllers
             _footballService = footballService;
         }
 
-        // GET api/<LeaguesController>/England
+
         [HttpGet("{country}")]
         public async Task<List<LeagueData>> GetLeagues(string country)
         {

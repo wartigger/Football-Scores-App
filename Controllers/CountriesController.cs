@@ -11,11 +11,11 @@ namespace Football_Scores_App.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CountriesController : ControllerBase
+    public class FootballController : ControllerBase
     {
         private readonly FootballService _footballService;
 
-        public CountriesController(FootballService footballService)
+        public FootballController(FootballService footballService)
         {
             _footballService = footballService;
         }
@@ -28,8 +28,18 @@ namespace Football_Scores_App.Controllers
             countries = await _footballService.GetCountriesAsync();
 
             return countries.Country;
-
-
         }
+
+        //[HttpGet("{country}")]
+        //[HttpGet]
+        //[Route("Leagues")]
+        //public async Task<List<LeagueData>> GetLeagues(string country)
+        //{
+        //    LeaguesDto leagues = new LeaguesDto();
+
+        //    leagues = await _footballService.GetLeaguesAsync(country);
+
+        //    return leagues.LeagueData;
+        //}
     }
 }

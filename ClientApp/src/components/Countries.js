@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
+export const displayName = "Countries";
+
 export class Countries extends Component {
-    static displayName = Countries.name;
 
     constructor(props) {
         super(props);
@@ -24,9 +25,8 @@ export class Countries extends Component {
                 </thead>
                 <tbody>
                     {countries.map(country =>
-
                         <tr key={country.name}>
-                            <button onClick="" >{country.name}</button>
+                            <button onClick={() => { this.sendCountryName(country.name) }}>{country.name}</button>
                             <td>{country.code}</td>
                             <td><img className="country-flag" src={country.flag}/></td>
                         </tr>
@@ -39,7 +39,7 @@ export class Countries extends Component {
     render() {
         let contents = this.state.loading
             ? <p><em>Load...</em></p>
-            : Countries.renderCountriesTable(this.state.countries);
+            : Countries.renderCountriesTable(this.state.countries, this.state.leagues);
 
         return (
             <div>
@@ -51,8 +51,15 @@ export class Countries extends Component {
     }
 
     async populateCountriesData() {
-        const response = await fetch('api/Countries');
+        const response = await fetch('api/Football');
         const data = await response.json();
         this.setState({ countries: data, loading: false });
     }
+
+    static async sendCountryName(countryName) {
+        return await fetch(`/api/Leagues/${countryName}`);
+    }
+
+    // const data = response.json();
+    // this.setState({ leagues: data, loading: false });
 }
