@@ -1,0 +1,69 @@
+﻿using Football_Scores_App.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+
+namespace Football_Scores_App.Services
+{
+    public class FootballService
+    {
+        public Client client = new Client();
+
+        public TestClient testClient = new TestClient();
+        public string country = "England";
+
+        public async Task<CountriesDto> GetCountriesAsync() 
+        {
+            //var responseCountries = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/countries");
+
+
+            var responseCountries = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/6027abc1435c323ba1c5ad1e/1");
+
+            CountriesDto countries = JsonConvert.DeserializeObject<CountriesDto>(responseCountries);
+
+            return countries;
+        }
+
+        public async Task<LeaguesDto> GetLeaguesAsync(string country)
+        {
+            LeaguesDto leagues = new LeaguesDto();
+
+            if (country == "England") {
+                var responseLeagues = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602840ea435c323ba1c5e6da");
+                leagues = JsonConvert.DeserializeObject<LeaguesDto>(responseLeagues);
+            }
+
+            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
+
+            return leagues;
+        }
+    }
+
+
+    public class Client
+    {
+        public HttpClient httpClient;
+        public Client() {
+
+            httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "23b475f27amshe981062a40ea82bp1c4350jsn00eea16fa137");
+            httpClient.DefaultRequestHeaders.Add("x-rapidapi-host", "api-football-v1.p.rapidapi.com");
+        }
+    }
+
+
+
+    public class TestClient
+    {
+        public HttpClient httpClient;
+        public TestClient()
+        {
+            httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("secret-key", "$2b$10$Gdof0ZFuRwXv20NwKwPT8.oH/kp02AtJlE4Apg6YpjrzT.nOH9bDm");
+        }
+    }
+}
