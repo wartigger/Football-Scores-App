@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link, useParams  } from "react-router-dom";
+import { Spinner, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 
 export const displayName = "Countries";
 
@@ -13,38 +15,40 @@ export class Countries extends Component {
         this.populateCountriesData();
     }
 
-    static renderCountriesTable(countries) {
+    renderCountriesTable(countries) {
         return (
-            <table className='table table-striped' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>Country</th>
-                        <th>Country Code</th>
-                        <th>Flag</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Container>
+                <Row>
                     {countries.map(country =>
-                        <tr key={country.name}>
-                            <button onClick={() => { this.sendCountryName(country.name) }}>{country.name}</button>
-                            <td>{country.code}</td>
-                            <td><img className="country-flag" src={country.flag}/></td>
-                        </tr>
+                        <Col className="table-div" xs="3">
+                            <Link to={`/countries/${country.name}`}>
+                                <ListGroup horizontal>
+                                    <ListGroupItem className="d-flex align-items-center" key={country.name} tag="a" href="">
+                                        <div className="league-flag">
+                                            <img className="country-flag" src={country.flag} />
+                                        </div>
+
+                                        <div>
+                                            <div className="football-normal-text">{country.name}</div>
+                                        </div>
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </Link>
+                        </Col>
                     )}
-                </tbody>
-            </table>
+                </Row>
+            </Container>
         );
     }
 
     render() {
         let contents = this.state.loading
-            ? <p><em>Load...</em></p>
-            : Countries.renderCountriesTable(this.state.countries, this.state.leagues);
+            ? <div className="spinner"><Spinner color="primary" /></div>
+            : this.renderCountriesTable(this.state.countries, this.props.match.url);
 
         return (
             <div>
                 <h1 id="tabelLabel">Countries</h1>
-                <p>This component demonstrates fetching data from the server.</p>
                 {contents}
             </div>
         );
@@ -55,11 +59,4 @@ export class Countries extends Component {
         const data = await response.json();
         this.setState({ countries: data, loading: false });
     }
-
-    static async sendCountryName(countryName) {
-        return await fetch(`/api/Leagues/${countryName}`);
-    }
-
-    // const data = response.json();
-    // this.setState({ leagues: data, loading: false });
 }

@@ -22,18 +22,18 @@ namespace Football_Scores_App.Models
         public Country Country { get; set; } // Located in CountriesDto Model
     }
 
-    public class League
-    {
-        [JsonProperty("id")]
-        public int Id { get; set; }
+    //public class League
+    //{
+    //    [JsonProperty("id")]
+    //    public int Id { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
+    //    [JsonProperty("name")]
+    //    public string Name { get; set; }
 
-        [JsonProperty("type")]
-        public string Type { get; set; }
+    //    [JsonProperty("type")]
+    //    public string Type { get; set; }
 
-        [JsonProperty("logo")]
-        public string Logo { get; set; }
-    }
+    //    [JsonProperty("logo")]
+    //    public string Logo { get; set; }
+    //}
 }

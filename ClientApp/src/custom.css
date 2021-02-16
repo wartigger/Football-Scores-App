@@ -15,6 +15,57 @@ code {
   border-color: #1861ac;
 }
 
-.country-flag {
-    width:20px;
+.league-flag {
+    width: 20%;
+    float: left;
+    margin-right:10px;
+}
+
+.league-flag > img {
+    width: 100%;
+}
+
+.list-group-item:link {
+    width: 100%;
+    text-decoration: none;
+}
+
+.list-group-item div:nth-child(2) {
+    margin: 0px auto;
+}
+
+.list-group-horizontal {
+    height: 100%;
+}
+
+.list-group-horizontal:hover {
+    background-color: aliceblue;
+}
+
+.table-div {
+    height: 100px;
+    padding: 6px;
+}
+
+.table-div a:first-child:hover {
+    background-color: aliceblue;
+}
+
+.spinner {
+    text-align: center;
+}
+
+.football-nav-link {
+    float: left;
+    font-size: 40px;
+    padding: 15px;
+}
+
+.football-nav {
+    margin: 20px auto;
+    display: table;
+}
+
+.football-normal-text:link {
+    font-size: 20px;
 }

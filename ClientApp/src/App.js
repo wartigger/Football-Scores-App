@@ -5,6 +5,7 @@ import { Home } from './components/Home';
 import { Countries } from './components/Countries';
 import { Leagues } from './components/Leagues';
 import { ErrorPage } from './components/ErrorPage';
+import { LeagueInfo } from './components/LeagueInfo';
 
 import './custom.css'
 
@@ -16,8 +17,9 @@ export default class App extends Component {
             <Layout>
                 <Switch>
                     <Route exact path='/' component={Home} />
-                    <Route path='/countries' component={Countries} />
-                    <Route path='/leagues' component={Leagues} />
+                    <Route exact path='/countries' component={Countries} />
+                    <Route exact path='/countries/:countryName' component={Leagues} />
+                    <Route path='/countries/:countryName/:leagueName' component={LeagueInfo} />
                     <Route path='*' component={ErrorPage} />
                 </Switch>
             </Layout>

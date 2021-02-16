@@ -1,4 +1,8 @@
 ﻿import React, { Component } from 'react';
+import { ErrorPage } from './ErrorPage';
+import { withRouter } from "react-router";
+import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Link } from "react-router-dom";
 
 export const displayName = "Leagues";
 
@@ -13,46 +17,54 @@ export class Leagues extends Component {
         this.populateLeaguesData();
     }
 
-    static renderLeaguesTable(leagues) {
+    static renderLeaguesTable(leagues, url) {
         return (
-            <table className='table table-striped' aria-labelledby="tabelLabel">
-                <thead>
-                    <tr>
-                        <th>League</th>
-                        <th>Flag</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <Container>
+                <Row>
                     {leagues.map(leagueData =>
-                        leagueData.map(league =>
-                            <tr key={league.name}>
-                                <button /*onClick={() => { this.sendCountryName(country.name) }}*/>{league.name}</button>
-                                <td><img className="country-flag" src={league.flag} /></td>
-                            </tr>
-                            )
+                        <Col className="table-div" xs="3">
+                            <Link to={`/countries/${url}/${leagueData.league.name}`}>
+                                <ListGroup horizontal>
+                                    <ListGroupItem className="d-flex align-items-center" key={leagueData.league.name} tag="a" href="">
+                                        <div className="league-flag">
+                                            <img src={leagueData.league.logo} />
+                                        </div>
+                                        <div className="football-normal-text">{leagueData.league.name}</div>
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </Link>
+                        </Col>
                     )}
-                </tbody>
-            </table>
+                </Row>
+            </Container>
         );
     }
 
     render() {
-        let contents = this.state.loading
-            ? <p><em>Load...</em></p>
-            : Leagues.renderLeaguesTable(this.state.leagues, this.state.leagues);
+        if (this.state.loading) {
+            return <div className="spinner"><Spinner color="primary" /></div>
+        }
+
+        if (!this.state.leagues) {
+            return <ErrorPage />;
+        }
 
         return (
             <div>
-                <h1 id="tabelLabel">Leagues</h1>
-                <p>This component demonstrates fetching data from the server.</p>
-                {contents}
+                <div className="football-nav">
+                    <Link to="/countries"><div className="football-nav-link">Countries</div></Link>
+                    <div className="football-nav-link separator">&gt;</div>
+                    <div className="football-nav-link">{this.props.match.params.countryName}</div>
+                </div>
+                {Leagues.renderLeaguesTable(this.state.leagues, this.props.match.params.countryName)}
             </div>
         );
     }
 
 
     async populateLeaguesData() {
-        const response = await fetch('api/Leagues');
+        const countryName = this.props.match.params.countryName;
+        const response = await fetch(`/api/Leagues/${countryName}`);
         const data = await response.json();
         this.setState({ leagues: data, loading: false });
     }

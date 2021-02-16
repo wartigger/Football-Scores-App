@@ -33,7 +33,7 @@ namespace Football_Scores_App.Services
             LeaguesDto leagues = new LeaguesDto();
 
             if (country == "England") {
-                var responseLeagues = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602840ea435c323ba1c5e6da");
+                var responseLeagues = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab7ee6b568373f8c23e90");
                 leagues = JsonConvert.DeserializeObject<LeaguesDto>(responseLeagues);
             }
 
@@ -41,8 +41,23 @@ namespace Football_Scores_App.Services
 
             return leagues;
         }
-    }
 
+        public async Task<LeagueDto> GetLeagueInfoAsync(int leagueId)
+        {
+            LeagueDto leagueInfo = new LeagueDto();
+
+            if (leagueId == 39)
+            {
+                var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab82599ac3873a349fc86");
+                leagueInfo = JsonConvert.DeserializeObject<LeagueDto>(responseLeague);
+            }
+
+            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
+
+            return leagueInfo;
+        }
+
+    }
 
     public class Client
     {
