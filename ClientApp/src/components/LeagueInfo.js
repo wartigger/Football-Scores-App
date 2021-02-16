@@ -11,7 +11,7 @@ export class LeagueInfo extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { leagueStandings: [], leagueTopScorers: [], loading: true, activeTab: '1'};
+        this.state = { leagueStandings: [], leagueTopScorers: [], loadingTopScorers: true, loadingStandings: true, activeTab: '1' };
         this.toggle = this.toggle.bind(this);
     }
 
@@ -22,8 +22,9 @@ export class LeagueInfo extends Component {
     }
 
     componentDidMount() {
-        this.populateLeagueStandings();
-        this.populateLeagueTopScorers();
+        this.populateLeagueStandings().then(() => {
+            this.populateLeagueTopScorers();
+        });
     }
 
     renderLeagueInfoTable() {
@@ -53,9 +54,9 @@ export class LeagueInfo extends Component {
                                 : null}
                         </TabPane>
                         <TabPane tabId="2">
-                            {this.state.activeTab == '2'
-                                ? <div>{this.renderLeagueTopScorers()}</div>
-                                : null}
+                            {this.state.activeTab == '2' && (this.state.loadingTopScorers
+                                ? <div className="spinner"><Spinner color="primary" /></div>
+                                : <div>{this.renderLeagueTopScorers()}</div>)}
                         </TabPane>
                     </TabContent>
                 </div>
@@ -124,51 +125,26 @@ export class LeagueInfo extends Component {
         return (
             <Container>
                 {
-                    this.state.leagueTopScorers.response.map(leagueData =>
+                    this.state.leagueTopScorers.response.map((leagueData, index) =>
                         <div>
-                            <Row>
-                                <div className="football-league-main-logo">
-                                    <ListGroup horizontal>
-                                        <ListGroupItem className="d-flex align-items-center" key={leagueData.league.name}>
-                                            <div>
-                                                <img src={leagueData.league.logo} />
-                                            </div>
-                                        </ListGroupItem>
-                                    </ListGroup>
-                                </div>
-                                <div className="football-league-main-text">
-                                    <p>{leagueData.league.name}</p>
-                                    <p>{leagueData.league.season}</p>
-                                </div>
-                            </Row>
-
-                            {leagueData.league.standings.map(standings =>
-                                standings.map(teamStats =>
-                                    <Row>
-                                        <Col>
-                                            {teamStats.rank}
-                                        </Col>
-                                        <Col>
-                                            <Link to={`/countries/${this.props.match.params.leagueId}/${leagueData.league.name}`}>{teamStats.team.name}</Link>
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.played}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.win}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.draw}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.lose}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.goals.for}:{teamStats.all.goals.against}
-                                        </Col>
-
-                                    </Row>
-                                )
+                            {leagueData.statistics.map(stats =>
+                                <Row>
+                                    <Col>
+                                        {index + 1}
+                                    </Col>
+                                    <Col>
+                                        {leagueData.player.name}
+                                    </Col>
+                                    <Col>
+                                        {stats.team.name}
+                                    </Col>
+                                    <Col>
+                                        {stats.goals.total}
+                                    </Col>
+                                    <Col>
+                                        {stats.goals.assists}
+                                    </Col>
+                                </Row>
                             )}
                         </div>
                     )
@@ -178,8 +154,7 @@ export class LeagueInfo extends Component {
     }
 
     render() {
-        console.log(this.state);
-        if (this.state.loading) {
+        if (this.state.loadingStandings) {
             return <div className="spinner"><Spinner color="primary" /></div>
         }
 
@@ -204,17 +179,19 @@ export class LeagueInfo extends Component {
         const leagueId = this.props.match.params.leagueId;
         const response = await fetch(`/api/League/${leagueId}`);
         const data = await response.json();
-        this.setState({ leagueStandings: data, loading: false });
+        this.setState({ leagueStandings: data, loadingStandings: false });
     }
 
     async populateLeagueTopScorers() {
         let leagueId, leagueSeason;
-        this.state.leagueStandings.response.map(leagueData => {
-            leagueId = this.props.match.params.leagueId;
-            leagueSeason = leagueData.league.season;
-        })
+        {
+            this.state.leagueStandings.response.map(leagueData => {
+                leagueId = leagueData.league.id;
+                leagueSeason = leagueData.league.season;
+            })
+        }
         const response = await fetch(`/api/League/${leagueId}/${leagueSeason}`);
         const data = await response.json();
-        this.setState({ leagueTopScorers: data, loading: false });
+        this.setState({ leagueTopScorers: data, loadingTopScorers: false });
     }
 }

@@ -33,9 +33,9 @@ namespace Football_Scores_App.Controllers
         }
 
         [HttpGet("{leagueId}/{season}")]
-        public async Task<LeagueTopScorersDto> GetLeagueInfo(int leagueId, int season)
+        public async Task<LeagueTopScorersDto.Root> GetLeagueInfo(int leagueId, int season)
         {
-            LeagueTopScorersDto leagueTopScorers = new LeagueTopScorersDto();
+            LeagueTopScorersDto.Root leagueTopScorers = new LeagueTopScorersDto.Root();
 
             leagueTopScorers = await _footballService.GetLeagueTopScorersAsync(leagueId, season);
 
