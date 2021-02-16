@@ -22,7 +22,7 @@ export class Countries extends Component {
                     {countries.map(country =>
                         <Col className="table-div" xs="3">
                             <Link to={`/countries/${country.name}`}>
-                                <ListGroup horizontal>
+                                <ListGroup horizontal className="list-group-items">
                                     <ListGroupItem className="d-flex align-items-center" key={country.name} tag="a" href="">
                                         <div className="league-flag">
                                             <img className="country-flag" src={country.flag} />

@@ -17,14 +17,14 @@ export class Leagues extends Component {
         this.populateLeaguesData();
     }
 
-    static renderLeaguesTable(leagues, url) {
+    renderLeaguesTable(leagues, url) {
         return (
             <Container>
                 <Row>
                     {leagues.map(leagueData =>
                         <Col className="table-div" xs="3">
-                            <Link to={`/countries/${url}/${leagueData.league.name}`}>
-                                <ListGroup horizontal>
+                            <Link to={`/countries/${url}/${leagueData.league.id}`}>
+                                <ListGroup horizontal className="list-group-items">
                                     <ListGroupItem className="d-flex align-items-center" key={leagueData.league.name} tag="a" href="">
                                         <div className="league-flag">
                                             <img src={leagueData.league.logo} />
@@ -56,7 +56,7 @@ export class Leagues extends Component {
                     <div className="football-nav-link separator">&gt;</div>
                     <div className="football-nav-link">{this.props.match.params.countryName}</div>
                 </div>
-                {Leagues.renderLeaguesTable(this.state.leagues, this.props.match.params.countryName)}
+                {this.renderLeaguesTable(this.state.leagues, this.props.match.params.countryName)}
             </div>
         );
     }

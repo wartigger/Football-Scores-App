@@ -42,7 +42,7 @@ namespace Football_Scores_App.Services
             return leagues;
         }
 
-        public async Task<LeagueDto> GetLeagueInfoAsync(int leagueId)
+        public async Task<LeagueDto> GetLeagueStandingsAsync(int leagueId)
         {
             LeagueDto leagueInfo = new LeagueDto();
 
@@ -57,6 +57,20 @@ namespace Football_Scores_App.Services
             return leagueInfo;
         }
 
+        public async Task<LeagueTopScorersDto> GetLeagueTopScorersAsync(int leagueId, int season)
+        {
+            LeagueTopScorersDto leagueTopScorers = new LeagueTopScorersDto();
+
+            if (leagueId == 39 && season == 2020)
+            {
+                var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602c342f0665b21b00b85d12");
+                leagueTopScorers = JsonConvert.DeserializeObject<LeagueTopScorersDto>(responseLeague);
+            }
+
+            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
+
+            return leagueTopScorers;
+        }
     }
 
     public class Client

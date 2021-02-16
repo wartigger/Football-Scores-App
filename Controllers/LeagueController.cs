@@ -27,10 +27,21 @@ namespace Football_Scores_App.Controllers
         {
             LeagueDto league = new LeagueDto();
 
-            league = await _footballService.GetLeagueInfoAsync(leagueId);
+            league = await _footballService.GetLeagueStandingsAsync(leagueId);
 
             return league;
         }
+
+        [HttpGet("{leagueId}/{season}")]
+        public async Task<LeagueTopScorersDto> GetLeagueInfo(int leagueId, int season)
+        {
+            LeagueTopScorersDto leagueTopScorers = new LeagueTopScorersDto();
+
+            leagueTopScorers = await _footballService.GetLeagueTopScorersAsync(leagueId, season);
+
+            return leagueTopScorers;
+        }
+
 
         // POST api/<LeagueController>
         [HttpPost]
