@@ -41,12 +41,12 @@ namespace Football_Scores_App.Controllers
             return leagueTopScorers;
         }
 
-        [HttpGet("results/{leagueId}/{season}")]
-        public async Task<LeagueFixturessDto.Root> GetLeagueResults(int leagueId, int season)
+        [HttpGet("fixtures/{leagueId}/{season}")]
+        public async Task<object> GetLeagueResults(int leagueId, int season)
         {
-            LeagueFixturessDto.Root leagueTopScorers = new LeagueFixturessDto.Root();
+            //LeagueFixturessDto.Root leagueTopScorers = new LeagueFixturessDto.Root();
 
-            leagueTopScorers = await _footballService.GetLeagueResultsAsync(leagueId, season);
+            var leagueTopScorers = await _footballService.GetLeagueResultsAsync(leagueId, season);
 
             return leagueTopScorers;
         }

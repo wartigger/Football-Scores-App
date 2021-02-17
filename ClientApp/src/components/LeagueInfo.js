@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { ErrorPage } from './ErrorPage';
 import { withRouter } from "react-router";
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Spinner, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalHeader, ModalBody, Spinner, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import { Link } from "react-router-dom";
 import classnames from 'classnames';
 
@@ -14,13 +14,18 @@ export class LeagueInfo extends Component {
         this.state = {
             leagueStandings: [],
             leagueTopScorers: [],
+            leagueFixtures: [],
             loadingStandings: true,
             loadingTopScorers: true,
+            loadingFixtures: true,
             activeTabSummary: '1',
-            activeTabResults: '1'
+            activeTabResults: '1',
+            modal: false,
+            teamId: null
         };
         this.toggleSummary = this.toggleSummary.bind(this);
         this.toggleResults = this.toggleResults.bind(this);
+        this.toggleTeamInfo = this.toggleTeamInfo.bind(this);
     }
 
     toggleSummary(tab) {
@@ -35,9 +40,17 @@ export class LeagueInfo extends Component {
         }
     }
 
+    toggleTeamInfo(id) {
+        this.setState({
+            modal: !this.state.modal,
+            teamId: id
+        });
+    }
+
     componentDidMount() {
         this.populateLeagueStandings().then(() => {
             this.populateLeagueTopScorers();
+            this.populateLeagueFixtures();
         });
     }
 
@@ -117,10 +130,11 @@ export class LeagueInfo extends Component {
                                 </div>
                                 : null}
                         </TabPane>
+
                         <TabPane tabId="2">
-                            {this.state.activeTabSummary == '1'
-                                ? <div>RESULTS</div> //HERE 
-                                : null}
+                            {this.state.activeTabResults == '2' && (this.state.loadingFixtures
+                                ? <div className="spinner"><Spinner color="primary" /></div>
+                                : <div>{this.renderLeagueFixtures()}</div>)}
                         </TabPane>
                     </TabContent>
                 </div>
@@ -141,7 +155,15 @@ export class LeagueInfo extends Component {
                                             {teamStats.rank}
                                         </Col>
                                         <Col>
-                                            <Link to={`/countries/${this.props.match.params.leagueId}/${leagueData.league.name}`}>{teamStats.team.name}</Link>
+                                            <Link onClick={this.toggleTeamInfo()} >{teamStats.team.name}</Link>
+                                            <Modal isOpen={this.state.modal} toggle={this.toggleTeamInfo}>
+                                                <ModalHeader toggle={this.toggleTeamInfo}>
+                                                    LEAGUE TITLE
+                                                </ModalHeader>
+                                                <ModalBody>
+                                                    LEAGUE DETAILS
+                                                </ModalBody>
+                                            </Modal>
                                         </Col>
                                         <Col>
                                             {teamStats.all.played}
@@ -201,6 +223,38 @@ export class LeagueInfo extends Component {
         )
     }
 
+    renderLeagueFixtures() {
+        return (
+            <Container>
+                {
+                    this.state.leagueFixtures.map(leagueData =>
+                        <div>
+                            <div>{leagueData.round}</div>
+                            {leagueData.data.map(match =>
+                                <Row>
+                                    <Col>
+                                        {match.date}
+                                    </Col>
+                                    <Col>
+                                        <div class="float_fixture">{match.teams.home.name}</div>
+                                        <div className="img_temp float_fixture"><img src={match.teams.home.logo} /></div>
+                                    </Col>
+                                    <Col>
+                                        <b>{match.goals.home} - {match.goals.away}</b>
+                                    </Col>
+                                    <Col>
+                                        <div className="img_temp float_fixture"><img src={match.teams.away.logo} /></div>
+                                        <div class="float_fixture">{match.teams.away.name}</div>
+                                    </Col>
+                                </Row>
+                            )}
+                        </div>
+                    )
+                }
+            </Container>
+        )
+    }
+
     render() {
         if (this.state.loadingStandings) {
             return <div className="spinner"><Spinner color="primary" /></div>
@@ -241,5 +295,18 @@ export class LeagueInfo extends Component {
         const response = await fetch(`/api/League/summary/${leagueId}/${leagueSeason}`);
         const data = await response.json();
         this.setState({ leagueTopScorers: data, loadingTopScorers: false });
+    }
+
+    async populateLeagueFixtures() {
+        let leagueId, leagueSeason;
+        {
+            this.state.leagueStandings.response.map(leagueData => {
+                leagueId = leagueData.league.id;
+                leagueSeason = leagueData.league.season;
+            })
+        }
+        const response = await fetch(`/api/League/fixtures/${leagueId}/${leagueSeason}`);
+        const data = await response.json();
+        this.setState({ leagueFixtures: data, loadingFixtures: false });
     }
 }

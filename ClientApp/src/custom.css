@@ -81,3 +81,15 @@ code {
 .football-league-main-logo img {
     width: 100px;
 }
+
+.img_temp {
+    width: 20px;
+}
+
+.img_temp img {
+    width: 100%;
+}
+
+.float_fixture {
+    float:left;
+}

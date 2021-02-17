@@ -35,7 +35,7 @@ namespace Football_Scores_App.Models
         public class Fixture
         {
             [JsonProperty("date")]
-            public DateTime? Date { get; set; }
+            public DateTime Date { get; set; }
         }
 
         public partial class League
