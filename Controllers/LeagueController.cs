@@ -21,9 +21,8 @@ namespace Football_Scores_App.Controllers
             _footballService = footballService;
         }
 
-        // GET api/League/leagueId
-        [HttpGet("{leagueId}")]
-        public async Task<LeagueDto> GetLeagueInfo(int leagueId)
+        [HttpGet("summary/{leagueId}")]
+        public async Task<LeagueDto> GetLeagueStandings(int leagueId)
         {
             LeagueDto league = new LeagueDto();
 
@@ -32,8 +31,8 @@ namespace Football_Scores_App.Controllers
             return league;
         }
 
-        [HttpGet("{leagueId}/{season}")]
-        public async Task<LeagueTopScorersDto.Root> GetLeagueInfo(int leagueId, int season)
+        [HttpGet("summary/{leagueId}/{season}")]
+        public async Task<LeagueTopScorersDto.Root> GetLeagueTopScorers(int leagueId, int season)
         {
             LeagueTopScorersDto.Root leagueTopScorers = new LeagueTopScorersDto.Root();
 
@@ -42,23 +41,14 @@ namespace Football_Scores_App.Controllers
             return leagueTopScorers;
         }
 
-
-        // POST api/<LeagueController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("results/{leagueId}/{season}")]
+        public async Task<LeagueFixturessDto.Root> GetLeagueResults(int leagueId, int season)
         {
-        }
+            LeagueFixturessDto.Root leagueTopScorers = new LeagueFixturessDto.Root();
 
-        // PUT api/<LeagueController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            leagueTopScorers = await _footballService.GetLeagueResultsAsync(leagueId, season);
 
-        // DELETE api/<LeagueController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return leagueTopScorers;
         }
     }
 }

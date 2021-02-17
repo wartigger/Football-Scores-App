@@ -52,7 +52,7 @@ namespace Football_Scores_App.Services
                 leagueInfo = JsonConvert.DeserializeObject<LeagueDto>(responseLeague);
             }
 
-            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
+            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/standings?season=2020&league=39");
 
             return leagueInfo;
         }
@@ -67,7 +67,22 @@ namespace Football_Scores_App.Services
                 leagueTopScorers = JsonConvert.DeserializeObject<LeagueTopScorersDto.Root>(responseLeague);
             }
 
-            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
+            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/players/topscorers?league=39&season=2020");
+
+            return leagueTopScorers;
+        }
+
+        public async Task<LeagueFixturessDto.Root> GetLeagueResultsAsync(int leagueId, int season)
+        {
+            LeagueFixturessDto.Root leagueTopScorers = new LeagueFixturessDto.Root();
+
+            if (leagueId == 39 && season == 2020)
+            {
+                var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602d1b300665b21b00b8d50b");
+                leagueTopScorers = JsonConvert.DeserializeObject<LeagueFixturessDto.Root>(responseLeague);
+            }
+
+            //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/fixtures?league=39&season=2020&status=FT");
 
             return leagueTopScorers;
         }

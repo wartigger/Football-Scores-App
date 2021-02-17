@@ -21,7 +21,6 @@ namespace Football_Scores_App.Controllers
             _footballService = footballService;
         }
 
-
         [HttpGet("{country}")]
         public async Task<List<LeagueData>> GetLeagues(string country)
         {
@@ -30,24 +29,6 @@ namespace Football_Scores_App.Controllers
             leagues = await _footballService.GetLeaguesAsync(country);
 
             return leagues.LeagueData;
-        }
-
-        // POST api/<LeaguesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<LeaguesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<LeaguesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
