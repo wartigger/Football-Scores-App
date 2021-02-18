@@ -114,6 +114,7 @@ namespace Football_Scores_App.Services
                     {
                         name = data.Player.Name,
                         age = data.Player.Age,
+                        team = data.Statistics[0].Team.Name,
                         appearences = data.Statistics[0].Games?.Appearences,
                         goals = data.Statistics[0].Goals.Total,
                         yellow = data.Statistics[0].Cards.Yellow,

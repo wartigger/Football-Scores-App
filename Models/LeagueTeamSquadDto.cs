@@ -37,6 +37,9 @@ namespace Football_Scores_App.Models
 
         public class Statistic
         {
+            [JsonProperty("team")]
+            public Team Team { get; set; }
+
             [JsonProperty("games")]
             public Games Games { get; set; }
 
@@ -45,6 +48,11 @@ namespace Football_Scores_App.Models
 
             [JsonProperty("cards")]
             public Cards Cards { get; set; }
+        }
+        public class Team 
+        {
+            [JsonProperty("name")]
+            public string Name { get; set; }
         }
 
         public class Games

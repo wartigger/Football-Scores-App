@@ -25,7 +25,8 @@ export class LeagueInfo extends Component {
             modal: false,
             leagueId: null,
             season: null,
-            teamId: null
+            teamId: null,
+            teamName: "",
 
         };
         this.toggleSummary = this.toggleSummary.bind(this);
@@ -55,11 +56,13 @@ export class LeagueInfo extends Component {
         }
     }
 
-    toggleTeamInfo(_team) { 
-        this.populateLeagueTeamSquad(_team)
+    toggleTeamInfo(team) { 
+        this.populateLeagueTeamSquad(team.id)
         this.setState({
             modal: !this.state.modal,
-            teamId: _team
+            //modal: true,
+            teamId: team.id,
+            teamName: team.name
         });
     }
 
@@ -174,7 +177,7 @@ export class LeagueInfo extends Component {
                                             {teamStats.rank}
                                         </Col>                                                                                          {/*leagueData.league.id, leagueData.league.season, teamStats.team, this.populateLeagueTeamSquad()*/}
                                         <Col>
-                                            <Link onClick={() => this.toggleTeamInfo(teamStats.team.id)}>{teamStats.team.name}</Link>
+                                            <Link onClick={() => this.toggleTeamInfo(teamStats.team)}>{teamStats.team.name}</Link>
                                         </Col>
                                         <Col>
                                             {teamStats.all.played}
@@ -197,18 +200,35 @@ export class LeagueInfo extends Component {
                         </div>
                     )
                 }
-                <Modal isOpen={this.state.modal} toggle={this.toggleTeamInfo}>
-                    <ModalHeader toggle={this.toggleTeamInfo}>LEAGUE TITLE</ModalHeader>
+
+                <Modal isOpen={this.state.modal} toggle={this.toggleTeamInfo}>                                                                      /*teamId={this.state.teamId}*/
+                                                                                                                                                        {/* <ModalHeader toggle={this.toggleTeamInfo}>LEAGUE TITLE</ModalHeader> */}
                     <ModalBody>
+                        <h3>{this.state.teamName}</h3>
                         {(this.state.loadingTeamSquad
                             ? <div className="spinner"><Spinner color="primary" /></div>
                             : <div>{this.renderLeagueTeamSquad()}</div>)}
                     </ModalBody>
+
                 </Modal> 
+
+
+                {/* {this.state.modal & (
+                    <Modal isOpen={this.state.modal} closeModal={(() => this.setState)} toggle={this.toggleTeamInfo} teamId={this.state.teamId}>
+                        <ModalHeader toggle={this.toggleTeamInfo}>LEAGUE TITLE</ModalHeader> 
+                        <ModalBody>
+                            {(this.state.loadingTeamSquad
+                                ? <div className="spinner"><Spinner color="primary" /></div>
+                                : <div>{this.renderLeagueTeamSquad()}</div>)}
+                        </ModalBody>
+                    </Modal> 
+                )} */}
+                
             </Container>
         )
-        
     }
+
+
 
     renderLeagueTopScorers() {
         return (
@@ -367,8 +387,8 @@ export class LeagueInfo extends Component {
         this.setState({ leagueFixtures: data, loadingFixtures: false });
     }
 
-    async populateLeagueTeamSquad(/*_leagueId, _season, */_teamId) {
-        let leagueId, leagueSeason/*, teamId*/;
+    async populateLeagueTeamSquad(_teamId) {                                                             /*_leagueId, _season, */
+        let leagueId, leagueSeason;
         {
             this.state.leagueStandings.response.map(leagueData => {
                 leagueId = leagueData.league.id;

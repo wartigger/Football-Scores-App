@@ -93,3 +93,7 @@ code {
 .float_fixture {
     float:left;
 }
+
+.fixtures {
+    background-color: lightgray;
+}
