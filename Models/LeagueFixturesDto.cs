@@ -74,16 +74,16 @@ namespace Football_Scores_App.Models
             public string Name { get; set; }
 
             [JsonProperty("logo")]
-            public Uri Logo { get; set; }
+            public string Logo { get; set; }
         }
 
         public class Goals
         {
             [JsonProperty("home")]
-            public int? Home { get; set; }
+            public int Home { get; set; }
 
             [JsonProperty("away")]
-            public int? Away { get; set; }
+            public int Away { get; set; }
         }
     }
 }

@@ -19,16 +19,15 @@ namespace Football_Scores_App.Services
 
         public async Task<CountriesDto> GetCountriesAsync() 
         {
-            //var responseCountries = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/countries");
-
-
-            var responseCountries = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/6027abc1435c323ba1c5ad1e/1");
+            var responseCountries = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/countries");
 
             CountriesDto countries = JsonConvert.DeserializeObject<CountriesDto>(responseCountries);
 
             return countries;
         }
 
+
+        //var responseCountries = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/6027abc1435c323ba1c5ad1e/1");
         public async Task<LeaguesDto.Root> GetLeaguesAsync(string country)
         {
             LeaguesDto.Root leagues = new LeaguesDto.Root();
@@ -62,10 +61,12 @@ namespace Football_Scores_App.Services
         {
             LeagueTopScorersDto.Root leagueTopScorers = new LeagueTopScorersDto.Root();
 
+            var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+
             if (leagueId == 39 && season == 2020)
             {
                 var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602c342f0665b21b00b85d12");
-                leagueTopScorers = JsonConvert.DeserializeObject<LeagueTopScorersDto.Root>(responseLeague);
+                leagueTopScorers = JsonConvert.DeserializeObject<LeagueTopScorersDto.Root>(responseLeague, settings);
             }
 
             //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/players/topscorers?league=39&season=2020");

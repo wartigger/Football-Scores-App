@@ -11,7 +11,7 @@ namespace Football_Scores_App.Models
         public class Root
         {
             [JsonProperty("results")]
-            public long Results { get; set; }
+            public int? Results { get; set; }
 
             [JsonProperty("response")]
             public List<Response> Response { get; set; }
@@ -58,7 +58,7 @@ namespace Football_Scores_App.Models
         public class Games
         {
             [JsonProperty("appearences")]
-            public int? Appearences { get; set; }
+            public int Appearences { get; set; }
 
             [JsonProperty("position")]
             public string Position { get; set; }
@@ -73,10 +73,10 @@ namespace Football_Scores_App.Models
         public class Cards
         {
             [JsonProperty("yellow")]
-            public int? Yellow { get; set; }
+            public int Yellow { get; set; }
 
             [JsonProperty("red")]
-            public int? Red { get; set; }
+            public int Red { get; set; }
         }
     }
 }

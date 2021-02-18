@@ -26,7 +26,7 @@ namespace Football_Scores_App.Models
         public class League
         {
             [JsonProperty("id")]
-            public int Id { get; set; }
+            public int? Id { get; set; }
 
             [JsonProperty("name")]
             public string Name { get; set; }
@@ -50,7 +50,7 @@ namespace Football_Scores_App.Models
         public partial class Standing
         {
             [JsonProperty("rank")]
-            public long Rank { get; set; }
+            public int? Rank { get; set; }
 
             [JsonProperty("team")]
             public Team Team { get; set; }
@@ -71,28 +71,28 @@ namespace Football_Scores_App.Models
         public partial class Team
         {
             [JsonProperty("id")]
-            public long Id { get; set; }
+            public int? Id { get; set; }
 
             [JsonProperty("name")]
             public string Name { get; set; }
 
             [JsonProperty("logo")]
-            public Uri Logo { get; set; }
+            public string Logo { get; set; }
         }
 
         public partial class All
         {
             [JsonProperty("played")]
-            public long Played { get; set; }
+            public int Played { get; set; }
 
             [JsonProperty("win")]
-            public long Win { get; set; }
+            public int Win { get; set; }
 
             [JsonProperty("draw")]
-            public long Draw { get; set; }
+            public int Draw { get; set; }
 
             [JsonProperty("lose")]
-            public long Lose { get; set; }
+            public int Lose { get; set; }
 
             [JsonProperty("goals")]
             public Goals Goals { get; set; }
@@ -101,10 +101,10 @@ namespace Football_Scores_App.Models
         public partial class Goals
         {
             [JsonProperty("for")]
-            public long For { get; set; }
+            public int For { get; set; }
 
             [JsonProperty("against")]
-            public long Against { get; set; }
+            public int Against { get; set; }
         }
     }
 }
