@@ -22,9 +22,9 @@ namespace Football_Scores_App.Controllers
         }
 
         [HttpGet("{country}")]
-        public async Task<List<LeagueData>> GetLeagues(string country)
+        public async Task<List<LeaguesDto.LeagueData>> GetLeagues(string country)
         {
-            LeaguesDto leagues = new LeaguesDto();
+            LeaguesDto.Root leagues = new LeaguesDto.Root();
 
             leagues = await _footballService.GetLeaguesAsync(country);
 

@@ -15,43 +15,59 @@ export class LeagueInfo extends Component {
             leagueStandings: [],
             leagueTopScorers: [],
             leagueFixtures: [],
+            leagueTeamSquad: [],
             loadingStandings: true,
             loadingTopScorers: true,
             loadingFixtures: true,
+            loadingTeamSquad: true,
             activeTabSummary: '1',
             activeTabResults: '1',
             modal: false,
+            leagueId: null,
+            season: null,
             teamId: null
+
         };
         this.toggleSummary = this.toggleSummary.bind(this);
         this.toggleResults = this.toggleResults.bind(this);
         this.toggleTeamInfo = this.toggleTeamInfo.bind(this);
     }
 
-    toggleSummary(tab) {
+    toggleSummary(tab, populateLeagueTopScorers) {
+        if (!this.state.leagueTopScorers) {
+            populateLeagueTopScorers();
+        }
+        
         if (this.state.activeTabSummary !== tab) {
-            this.setState({ activeTabSummary: tab });
+            this.setState({
+                activeTabSummary: tab
+            });
         }
     }
 
-    toggleResults(tab) {
+    toggleResults(tab, populateLeagueFixtures) {
+        if (!this.state.leagueFixtures) {
+            populateLeagueFixtures();
+        }
+
         if (this.state.activeTabResults !== tab) {
             this.setState({ activeTabResults: tab });
         }
     }
 
-    toggleTeamInfo(id) {
+    toggleTeamInfo(/*_leagueId, _season, */_team/*, populateLeagueTeamSquad*/) {
+
         this.setState({
             modal: !this.state.modal,
-            teamId: id
+            //_leagueId,
+            //_season,
+            teamId: _team.id
         });
+        //populateLeagueTeamSquad(/*_leagueId, _season, _teamId*/)
     }
 
     componentDidMount() {
-        this.populateLeagueStandings().then(() => {
-            this.populateLeagueTopScorers();
-            this.populateLeagueFixtures();
-        });
+        this.populateLeagueStandings();
     }
 
     renderLeagueInfoTable() {
@@ -89,7 +105,7 @@ export class LeagueInfo extends Component {
                         <NavItem>
                             <NavLink
                                 className={classnames({ active: this.state.activeTabResults === '2' })}
-                                onClick={() => { this.toggleResults('2'); }}
+                                onClick={() => { this.toggleResults('2', this.populateLeagueFixtures()); }}
                             > Results
                             </NavLink>
                         </NavItem>
@@ -106,22 +122,25 @@ export class LeagueInfo extends Component {
                                                 onClick={() => { this.toggleSummary('1'); }}
                                             > Standings
                                             </NavLink>
-                                        </NavItem>
-                                        <NavItem>
+                                        </NavItem> { /* ToggleSummary 1*/}
+
+                                        <NavItem> { /* ToggleSummary 2*/}
                                             <NavLink
                                                 className={classnames({ active: this.state.activeTabSummary === '2' })}
-                                                onClick={() => { this.toggleSummary('2'); }}
+                                                onClick={() => { this.toggleSummary('2', this.populateLeagueTopScorers()); }}
                                             > Top Scorers
                                             </NavLink>
                                         </NavItem>
                                     </Nav>
+
                                     <TabContent activeTab={this.state.activeTabSummary}>
                                         <TabPane tabId="1">
                                             {this.state.activeTabSummary == '1'
                                                 ? <div>{this.renderLeagueStandings()}</div>
                                                 : null}
-                                        </TabPane>
-                                        <TabPane tabId="2">
+                                        </TabPane> { /* TabId 1*/}
+
+                                        <TabPane tabId="2"> { /* TabId 2*/}
                                             {this.state.activeTabSummary == '2' && (this.state.loadingTopScorers
                                                 ? <div className="spinner"><Spinner color="primary" /></div>
                                                 : <div>{this.renderLeagueTopScorers()}</div>)}
@@ -155,15 +174,8 @@ export class LeagueInfo extends Component {
                                             {teamStats.rank}
                                         </Col>
                                         <Col>
-                                            <Link onClick={this.toggleTeamInfo()} >{teamStats.team.name}</Link>
-                                            <Modal isOpen={this.state.modal} toggle={this.toggleTeamInfo}>
-                                                <ModalHeader toggle={this.toggleTeamInfo}>
-                                                    LEAGUE TITLE
-                                                </ModalHeader>
-                                                <ModalBody>
-                                                    LEAGUE DETAILS
-                                                </ModalBody>
-                                            </Modal>
+                                            <Link onClick={() => this.toggleTeamInfo(/*leagueData.league.id, leagueData.league.season, */teamStats.team/*, this.populateLeagueTeamSquad()*/)}
+                                            >{teamStats.team.name}</Link>
                                         </Col>
                                         <Col>
                                             {teamStats.all.played}
@@ -180,13 +192,18 @@ export class LeagueInfo extends Component {
                                         <Col>
                                             {teamStats.all.goals.for}:{teamStats.all.goals.against}
                                         </Col>
-
                                     </Row>
                                 )
                             )}
                         </div>
                     )
                 }
+                <Modal isOpen={this.state.modal} toggle={this.toggleTeamInfo}>
+                    <ModalHeader toggle={this.toggleTeamInfo}>LEAGUE TITLE</ModalHeader>
+                    <ModalBody>
+                        {this.populateLeagueTeamSquad(this.state._teamId)}
+                    </ModalBody>
+                </Modal>
             </Container>
         )
     }
@@ -285,6 +302,7 @@ export class LeagueInfo extends Component {
     }
 
     async populateLeagueTopScorers() {
+        console.log("test");
         let leagueId, leagueSeason;
         {
             this.state.leagueStandings.response.map(leagueData => {
@@ -308,5 +326,19 @@ export class LeagueInfo extends Component {
         const response = await fetch(`/api/League/fixtures/${leagueId}/${leagueSeason}`);
         const data = await response.json();
         this.setState({ leagueFixtures: data, loadingFixtures: false });
+    }
+
+    async populateLeagueTeamSquad(/*_leagueId, _season, */_teamId) {
+        let leagueId, leagueSeason/*, teamId*/;
+        this.state.leagueStandings.response.map(leagueData => {
+            leagueId = leagueData.league.id;
+            leagueSeason = leagueData.league.season;
+            //leagueData.standings(teamData => {
+            //    teamId = teamData.team.id;
+            //})
+        })
+        const response = await fetch(`/api/League/squad/${leagueId}/${leagueSeason}/${_teamId}`);
+        const data = await response.json();
+        this.setState({ leagueTeamSquad: data, loadingTeamSquad: false });
     }
 }

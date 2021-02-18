@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Football_Scores_App.Models
 {
-    public class LeagueTopScorersDto
+    public class LeagueTeamSquadDto
     {
         public class Root
         {
@@ -30,34 +30,45 @@ namespace Football_Scores_App.Models
         {
             [JsonProperty("name")]
             public string Name { get; set; }
+
+            [JsonProperty("age")]
+            public int? Age { get; set; }
         }
 
-        public partial class Statistic
+        public class Statistic
         {
-            [JsonProperty("team")]
-            public Team Team { get; set; }
+            [JsonProperty("games")]
+            public Games Games { get; set; }
 
             [JsonProperty("goals")]
             public Goals Goals { get; set; }
+
+            [JsonProperty("cards")]
+            public Cards Cards { get; set; }
         }
 
-        public partial class Team
+        public class Games
         {
-            [JsonProperty("id")]
-            public long Id { get; set; }
+            [JsonProperty("appearences")]
+            public int? Appearences { get; set; }
 
-            [JsonProperty("name")]
-            public string Name { get; set; }
+            [JsonProperty("position")]
+            public string Position { get; set; }
         }
 
-        public partial class Goals
+        public class Goals
         {
             [JsonProperty("total")]
-            public long Total { get; set; }
+            public int? Total { get; set; }
+        }
 
-            [JsonProperty("assists")]
-            public long? Assists { get; set; }
+        public class Cards
+        {
+            [JsonProperty("yellow")]
+            public int? Yellow { get; set; }
+
+            [JsonProperty("red")]
+            public int? Red { get; set; }
         }
     }
-    
 }

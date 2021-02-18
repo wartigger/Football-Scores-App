@@ -22,9 +22,9 @@ namespace Football_Scores_App.Controllers
         }
 
         [HttpGet("summary/{leagueId}")]
-        public async Task<LeagueDto> GetLeagueStandings(int leagueId)
+        public async Task<LeagueStandingsDto.Root> GetLeagueStandings(int leagueId)
         {
-            LeagueDto league = new LeagueDto();
+            LeagueStandingsDto.Root league = new LeagueStandingsDto.Root();
 
             league = await _footballService.GetLeagueStandingsAsync(leagueId);
 
@@ -49,6 +49,16 @@ namespace Football_Scores_App.Controllers
             var leagueTopScorers = await _footballService.GetLeagueResultsAsync(leagueId, season);
 
             return leagueTopScorers;
+        }
+
+        [HttpGet("squad/{leagueId}/{season}/{teamId}")]
+        public async Task<object> GetLeagueTeamSquad(int leagueId, int season, int teamId)
+        {
+            //LeagueFixturessDto.Root leagueTopScorers = new LeagueFixturessDto.Root();
+
+            var leagueTeamSquad = await _footballService.GetLeagueTeamSquadAsync(leagueId, season, teamId);
+
+            return leagueTeamSquad;
         }
     }
 }

@@ -29,13 +29,13 @@ namespace Football_Scores_App.Services
             return countries;
         }
 
-        public async Task<LeaguesDto> GetLeaguesAsync(string country)
+        public async Task<LeaguesDto.Root> GetLeaguesAsync(string country)
         {
-            LeaguesDto leagues = new LeaguesDto();
+            LeaguesDto.Root leagues = new LeaguesDto.Root();
 
             if (country == "England") {
                 var responseLeagues = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab7ee6b568373f8c23e90");
-                leagues = JsonConvert.DeserializeObject<LeaguesDto>(responseLeagues);
+                leagues = JsonConvert.DeserializeObject<LeaguesDto.Root>(responseLeagues);
             }
 
             //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
@@ -43,19 +43,19 @@ namespace Football_Scores_App.Services
             return leagues;
         }
 
-        public async Task<LeagueDto> GetLeagueStandingsAsync(int leagueId)
+        public async Task<LeagueStandingsDto.Root> GetLeagueStandingsAsync(int leagueId)
         {
-            LeagueDto leagueInfo = new LeagueDto();
+            LeagueStandingsDto.Root leagueStandings = new LeagueStandingsDto.Root();
 
             if (leagueId == 39)
             {
                 var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab82599ac3873a349fc86");
-                leagueInfo = JsonConvert.DeserializeObject<LeagueDto>(responseLeague);
+                leagueStandings = JsonConvert.DeserializeObject<LeagueStandingsDto.Root>(responseLeague);
             }
 
             //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/standings?season=2020&league=39");
 
-            return leagueInfo;
+            return leagueStandings;
         }
 
         public async Task<LeagueTopScorersDto.Root> GetLeagueTopScorersAsync(int leagueId, int season)
@@ -98,27 +98,30 @@ namespace Football_Scores_App.Services
         }
 
 
-        public async Task<object> GetLeagueTeamInfoAsync(int leagueId, int season, int teamId)
+        public async Task<object> GetLeagueTeamSquadAsync(int leagueId, int season, int teamId)
         {
-            LeagueFixturessDto.Root leagueFixtures = new LeagueFixturessDto.Root();
+            LeagueTeamSquadDto.Root LeagueTeamInfo = new LeagueTeamSquadDto.Root();
 
             var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602d9b595605851b065f097f");
-            leagueFixtures = JsonConvert.DeserializeObject<LeagueFixturessDto.Root>(responseLeague);
+            LeagueTeamInfo = JsonConvert.DeserializeObject<LeagueTeamSquadDto.Root>(responseLeague);
 
-            var fixturesByRound = leagueFixtures.Response
-                .GroupBy(match => match.League.Round)
-                .Select(fixture => new
+            var SquadByPosition = LeagueTeamInfo.Response
+                .GroupBy(responseData => responseData.Statistics[0].Games.Position)
+                .Select(player => new
                 {
-                    round = $"Round {fixture.Key.Split(' ').Last()}",
-                    data = fixture.Select(data => new
+                    position = player.Key,
+                    data = player.Select(data => new
                     {
-                        date = data.Fixture.Date.ToString("yyyy-MM-dd HH:mm"),
-                        data.Teams,
-                        data.Goals
-                    }),
-                });
+                        name = data.Player.Name,
+                        age = data.Player.Age,
+                        appearences = data.Statistics[0].Games?.Appearences,
+                        goals = data.Statistics[0].Goals.Total,
+                        yellow = data.Statistics[0].Cards.Yellow,
+                        red = data.Statistics[0].Cards.Red
+                    })/*.Where(x => x.appearences > 0)*/,
+                }).Where(a => a.data.Any(b=> b.appearences > 0));
 
-            return fixturesByRound;
+            return SquadByPosition;
             //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/players?team=33&league=39&season=2020");
         }
     }
