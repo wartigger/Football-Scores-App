@@ -104,7 +104,9 @@ export class LeagueInfoComponent extends Component {
         return (
             <Container>
                 {this.state.leagueStandings.response.map(leagueData =>
-                    <Row>
+
+                    <Row key={leagueData.league.id}>
+
                         <div className="football-league-main-logo">
                             <ListGroup horizontal>
                                 <ListGroupItem className="d-flex align-items-center" key={leagueData.league.name}>
@@ -118,11 +120,10 @@ export class LeagueInfoComponent extends Component {
                             <p>{leagueData.league.name}</p>
                             <p>{leagueData.league.season}</p>
                         </div>
+
                     </Row>
                 )}
-
-
-                {/* */}
+            
                 <div>
                     <Nav tabs>
                         <NavItem>
@@ -132,6 +133,7 @@ export class LeagueInfoComponent extends Component {
                                 Summary
                             </NavLink>
                         </NavItem>
+
                         <NavItem>
                             <NavLink
                                 className={classnames({ active: this.state.activeTabResults === '2' })}
@@ -140,48 +142,21 @@ export class LeagueInfoComponent extends Component {
                             </NavLink>
                         </NavItem>
 
-                        <NavItem>
-                            
-                            <select id="seasonValue" onChange={event => this.changeYear(this.props.countryName, this.props.leagueId, event.target.value)}/* value={this.props.seasonYear}*/>
+                        <NavItem>  
+                            <select id="seasonValue" onChange={event => this.changeYear(this.props.countryName, this.props.leagueId, event.target.value)}>
                                 {this.seasonYears.map(year => {
                                     if (year == this.props.seasonYear) {
                                         return (<option disabled="true" selected="true" value={year}>{year}</option>)
                                     }
-                                    else { return <option value={year} /*to={`/countries/${this.props.countryName}/${this.props.leagueId}/${year}`}*/> {year}</option> }
+                                    else { return <option value={year}> {year}</option> }
                                 }
                                 )}
                             </select>
-
-                            {/*
-                                <div>  
-                                    <select id="seasonYear" onChange={this.change} value={this.props.seasonYear}>
-                                    <option value="select">Select</option>
-                                    <option value="Java">Java</option>
-                                    <option value="C++">C++</option>
-                                </select>
-                                <p></p>
-                                <p>{this.state.value}</p>
-                            </div>
-
-                            <FormGroup>
-                                <Label for="exampleSelect">Select</Label>
-                                <Input type="select" name="select" id="exampleSelect">
-                                    <option to={`/countries/${this.props.countryName}/${this.props.leagueId}/${2010}`}>2010</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </Input>
-                            </FormGroup>
-
-                            <div>
-                                <Link to={`/countries/${this.props.countryName}/${this.props.leagueId}/${2010}`}>2010</Link>
-                            </div> */}
-
                         </NavItem>
-
                     </Nav>
+
                     <br /><br />
+
                     <TabContent activeTab={this.state.activeTabResults}>
                         <TabPane tabId="1">
                             {this.state.activeTabResults == '1'
@@ -194,7 +169,7 @@ export class LeagueInfoComponent extends Component {
                                             > Standings
                                             </NavLink>
                                         </NavItem> { /* ToggleSummary 1*/}
-
+                                        
                                         <NavItem> { /* ToggleSummary 2*/}
                                             <NavLink
                                                 className={classnames({ active: this.state.activeTabSummary === '2' })}
@@ -237,33 +212,42 @@ export class LeagueInfoComponent extends Component {
             <Container>
                 {
                     this.state.leagueStandings.response.map(leagueData =>
-                        <div>
-                            {leagueData.league.standings.map(standings =>
-                                standings.map(teamStats =>
-                                    <Row>
-                                        <Col>
-                                            {teamStats.rank}
-                                        </Col>
-                                        <Col>
-                                            <Link onClick={() => this.toggleTeamInfo(leagueData.league.id, leagueData.league.season, teamStats.team)}>{teamStats.team.name}</Link>
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.played}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.win}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.draw}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.lose}
-                                        </Col>
-                                        <Col>
-                                            {teamStats.all.goals.for}:{teamStats.all.goals.against}
-                                        </Col>
-                                    </Row>
-                                )
+
+                        <div key={leagueData.league.id}>
+
+                            {leagueData.league.standings.map((standings, index) =>
+
+                                <div key={index}>
+
+                                    {standings.map(teamStats =>
+
+                                        <Row key={teamStats.rank}>
+
+                                            <Col>
+                                                {teamStats.rank}
+                                            </Col>
+                                            <Col>
+                                                <Link onClick={() => this.toggleTeamInfo(leagueData.league.id, leagueData.league.season, teamStats.team)}>{teamStats.team.name}</Link>
+                                            </Col>
+                                            <Col>
+                                                {teamStats.all.played}
+                                            </Col>
+                                            <Col>
+                                                {teamStats.all.win}
+                                            </Col>
+                                            <Col>
+                                                {teamStats.all.draw}
+                                            </Col>
+                                            <Col>
+                                                {teamStats.all.lose}
+                                            </Col>
+                                            <Col>
+                                                {teamStats.all.goals.for}:{teamStats.all.goals.against}
+                                            </Col>
+
+                                        </Row>
+                                    )}
+                                </div>
                             )}
                         </div>
                     )
@@ -287,9 +271,14 @@ export class LeagueInfoComponent extends Component {
     renderLeagueTopScorers() {
         return (
             <Container>
-                {
-                    this.state.leagueTopScorers.response.map((leagueData, index) =>
-                        <div>
+                {(this.state.leagueTopScorers.response === undefined || this.state.leagueTopScorers.response.length == 0) ?
+
+                    <div>NO DATA</div>
+
+                    : this.state.leagueTopScorers.response.map((leagueData, index) =>
+
+                        <div key={leagueData.player.name}>
+
                             {leagueData.statistics.map(stats =>
                                 <Row>
                                     <Col>
@@ -299,6 +288,7 @@ export class LeagueInfoComponent extends Component {
                                         {leagueData.player.name}
                                     </Col>
                                     <Col>
+                                        {stats.team.logo}
                                         {stats.team.name}
                                     </Col>
                                     <Col>
@@ -321,10 +311,13 @@ export class LeagueInfoComponent extends Component {
             <Container>
                 {
                     this.state.leagueFixtures.map(leagueData =>
-                        <div>
-                            <div>{leagueData.round}</div>
-                            {leagueData.data.map(match =>
-                                <Row>
+
+                        <div key={leagueData.round}>
+
+                            <div className="teamSquad">{leagueData.round}</div>
+
+                            {leagueData.data.map((match, index) =>
+                                <Row key={index}>
                                     <Col>
                                         {match.date}
                                     </Col>
@@ -353,10 +346,13 @@ export class LeagueInfoComponent extends Component {
             <Container>
                 {
                     this.state.leagueTeamSquad.map(teamData =>
-                        <div>
-                            <div className="fixtures">{teamData.position}</div>
+
+                        <div key={teamData.position}>
+
+                            <div className="teamSquad">{teamData.position}</div>
+
                             {teamData.data.map(player =>
-                                <Row>
+                                <Row key={player.name}>
                                     <Col>
                                         {player.name}
                                     </Col>

@@ -48,12 +48,18 @@ namespace Football_Scores_App.Models
 
             [JsonProperty("name")]
             public string Name { get; set; }
+
+            [JsonProperty("logo")]
+            public string Logo { get; set; }
         }
 
         public partial class Goals
         {
             [JsonProperty("total")]
             public int Total { get; set; }
+
+            [JsonProperty("appearences")]
+            public int Appearences { get; set; }
 
             [JsonProperty("assists")]
             public int Assists { get; set; }
