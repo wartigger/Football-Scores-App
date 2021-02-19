@@ -12,16 +12,20 @@ namespace Football_Scores_App.Models
         public class Root
         {
             [JsonProperty("response")]
-            public List<LeagueData> LeagueData { get; set; }
+            public List<Response> Response { get; set; }
         }
 
-        public class LeagueData
+        public class Response
         {
             [JsonProperty("league")]
             public League League { get; set; }
 
             [JsonProperty("country")]
-            public Country Country { get; set; } // Located in CountriesDto Model
+            public Country Country { get; set; }
+
+            [JsonProperty("seasons")]
+            public List<Seasons> Seasons { get; set; }
+
         }
 
         public class League
@@ -34,6 +38,24 @@ namespace Football_Scores_App.Models
 
             [JsonProperty("logo")]
             public string Logo { get; set; }
+        }
+
+        public class Country
+        {
+            [JsonProperty("name")]
+            public string Name { get; set; }
+
+            [JsonProperty("flag")]
+            public string Flag { get; set; }
+        }
+
+        public class Seasons
+        {
+            [JsonProperty("year")]
+            public int? SeasonYear { get; set; }
+
+            [JsonProperty("current")]
+            public bool Current { get; set; }
         }
     }
 }

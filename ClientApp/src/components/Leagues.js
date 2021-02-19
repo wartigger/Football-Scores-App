@@ -17,19 +17,19 @@ export class Leagues extends Component {
         this.populateLeaguesData();
     }
 
-    renderLeaguesTable(leagues, url) {
+    renderLeaguesTable(/*leagues, url*/) {
         return (
             <Container>
                 <Row>
-                    {leagues.map(leagueData =>
+                    {this.state.leagues.map(leagueData =>
                         <Col className="table-div" xs="3">
-                            <Link to={`/countries/${url}/${leagueData.league.id}`}>
+                            <Link to={`/countries/${this.props.match.params.countryName}/${leagueData.leagueId}/${leagueData.seasonYear}`}>
                                 <ListGroup horizontal className="list-group-items">
-                                    <ListGroupItem className="d-flex align-items-center" key={leagueData.league.name} tag="a" href="">
+                                    <ListGroupItem className="d-flex align-items-center" key={leagueData.leagueName} tag="a" href="">
                                         <div className="league-flag">
-                                            <img src={leagueData.league.logo} />
+                                            <img src={leagueData.leagueLogo} />
                                         </div>
-                                        <div className="football-normal-text">{leagueData.league.name}</div>
+                                        <div className="football-normal-text">{leagueData.leagueName}</div>
                                     </ListGroupItem>
                                 </ListGroup>
                             </Link>
@@ -56,7 +56,7 @@ export class Leagues extends Component {
                     <div className="football-nav-link separator">&gt;</div>
                     <div className="football-nav-link">{this.props.match.params.countryName}</div>
                 </div>
-                {this.renderLeaguesTable(this.state.leagues, this.props.match.params.countryName)}
+                {this.renderLeaguesTable(/*this.state.leagues, this.props.match.params.countryName*/)}
             </div>
         );
     }

@@ -19,7 +19,7 @@ export default class App extends Component {
                     <Route exact path='/' component={Home} />
                     <Route exact path='/countries' component={Countries} />
                     <Route exact path='/countries/:countryName' component={Leagues} />
-                    <Route path='/countries/:countryName/:leagueId' component={LeagueInfo} />
+                    <Route path='/countries/:countryName/:leagueId/:seasonYear' component={LeagueInfo} />
                     <Route path='*' component={ErrorPage} />
                 </Switch>
             </Layout>

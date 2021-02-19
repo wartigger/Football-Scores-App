@@ -15,23 +15,23 @@ namespace Football_Scores_App.Controllers
     public class LeagueController : ControllerBase
     {
         private readonly FootballService _footballService;
-
         public LeagueController(FootballService footballService)
         {
             _footballService = footballService;
         }
 
-        [HttpGet("summary/{leagueId}")]
-        public async Task<LeagueStandingsDto.Root> GetLeagueStandings(int leagueId)
+
+        [HttpGet("standings/{leagueId}/{season}")]
+        public async Task<LeagueStandingsDto.Root> GetLeagueStandings(int leagueId, int season)
         {
             LeagueStandingsDto.Root league = new LeagueStandingsDto.Root();
 
-            league = await _footballService.GetLeagueStandingsAsync(leagueId);
+            league = await _footballService.GetLeagueStandingsAsync(leagueId, season);
 
             return league;
         }
 
-        [HttpGet("summary/{leagueId}/{season}")]
+        [HttpGet("top-scorers/{leagueId}/{season}")]
         public async Task<LeagueTopScorersDto.Root> GetLeagueTopScorers(int leagueId, int season)
         {
             LeagueTopScorersDto.Root leagueTopScorers = new LeagueTopScorersDto.Root();

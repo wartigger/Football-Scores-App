@@ -55,7 +55,7 @@ export class Countries extends Component {
     }
 
     async populateCountriesData() {
-        const response = await fetch('api/Football');
+        const response = await fetch('api/Countries');
         const data = await response.json();
         this.setState({ countries: data, loading: false });
     }

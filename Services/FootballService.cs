@@ -4,45 +4,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 
 namespace Football_Scores_App.Services
 {
+    //public Client client = new Client();
+
+
     public class FootballService
     {
-        public Client client = new Client();
-
         public TestClient testClient = new TestClient();
-        public string country = "England";
 
         public async Task<CountriesDto> GetCountriesAsync() 
         {
-            var responseCountries = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/countries");
+            var responseCountries = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/6027abc1435c323ba1c5ad1e/1");
+
+            //var responseCountries = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/countries");
 
             CountriesDto countries = JsonConvert.DeserializeObject<CountriesDto>(responseCountries);
 
             return countries;
         }
-
-
-        //var responseCountries = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/6027abc1435c323ba1c5ad1e/1");
-        public async Task<LeaguesDto.Root> GetLeaguesAsync(string country)
+        
+        public async Task<object> GetLeaguesAsync(string country)
         {
             LeaguesDto.Root leagues = new LeaguesDto.Root();
 
-            if (country == "England") {
-                var responseLeagues = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab7ee6b568373f8c23e90");
-                leagues = JsonConvert.DeserializeObject<LeaguesDto.Root>(responseLeagues);
-            }
+            
+            var responseLeagues = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab7ee6b568373f8c23e90");
+            leagues = JsonConvert.DeserializeObject<LeaguesDto.Root>(responseLeagues);
+
+            var leaguesBySeason = leagues.Response
+                .Select(responseData => new
+                {
+                    LeagueId = responseData.League.Id,
+                    LeagueName = responseData.League.Name,
+                    LeagueLogo = responseData.League.Logo,
+                    CountryName = responseData.Country.Name,
+                    CountrFlag = responseData.Country.Flag,
+                    SeasonYear = responseData.Seasons.Where(x=> x.Current).Select(a=>a.SeasonYear).FirstOrDefault()   /*(year => year.Year).Where(x=> responseData.Seasons.Any(a => a.Current == true))*/
+                });
 
             //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/leagues?country={country}");
 
-            return leagues;
+            return leaguesBySeason;
         }
 
-        public async Task<LeagueStandingsDto.Root> GetLeagueStandingsAsync(int leagueId)
+        public async Task<LeagueStandingsDto.Root> GetLeagueStandingsAsync(int leagueId, int season)
         {
             LeagueStandingsDto.Root leagueStandings = new LeagueStandingsDto.Root();
 
@@ -128,19 +136,6 @@ namespace Football_Scores_App.Services
         }
     }
 
-    public class Client
-    {
-        public HttpClient httpClient;
-        public Client() {
-
-            httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "23b475f27amshe981062a40ea82bp1c4350jsn00eea16fa137");
-            httpClient.DefaultRequestHeaders.Add("x-rapidapi-host", "api-football-v1.p.rapidapi.com");
-        }
-    }
-
-
-
     public class TestClient
     {
         public HttpClient httpClient;
@@ -148,6 +143,22 @@ namespace Football_Scores_App.Services
         {
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("secret-key", "$2b$10$Gdof0ZFuRwXv20NwKwPT8.oH/kp02AtJlE4Apg6YpjrzT.nOH9bDm");
+        }
+    }
+
+
+
+
+
+    public class Client
+    {
+        public HttpClient httpClient;
+        public Client()
+        {
+
+            httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "23b475f27amshe981062a40ea82bp1c4350jsn00eea16fa137");
+            httpClient.DefaultRequestHeaders.Add("x-rapidapi-host", "api-football-v1.p.rapidapi.com");
         }
     }
 }
