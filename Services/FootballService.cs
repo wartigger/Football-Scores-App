@@ -145,7 +145,7 @@ namespace Football_Scores_App.Services
         public TestClient()
         {
             httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("secret-key", "$2b$10$Gdof0ZFuRwXv20NwKwPT8.oH/kp02AtJlE4Apg6YpjrzT.nOH9bDm");
+            httpClient.DefaultRequestHeaders.Add("secret-key", "");
         }
     }
 
@@ -160,7 +160,7 @@ namespace Football_Scores_App.Services
         {
 
             httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "23b475f27amshe981062a40ea82bp1c4350jsn00eea16fa137");
+            httpClient.DefaultRequestHeaders.Add("x-rapidapi-key", "");
             httpClient.DefaultRequestHeaders.Add("x-rapidapi-host", "api-football-v1.p.rapidapi.com");
         }
     }

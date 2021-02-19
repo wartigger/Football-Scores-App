@@ -19,8 +19,8 @@ export class LeagueInfoComponent extends Component {
         loadingTopScorers: true,
         loadingFixtures: true,
         loadingTeamSquad: true,
-        activeTabSummary: '1',
-        activeTabResults: '1',
+        activeTabSummary: "1",
+        activeTabResults: "1",
         modal: false,
         leagueId: null,
         season: null,
@@ -130,16 +130,16 @@ export class LeagueInfoComponent extends Component {
                     <Nav tabs>
                         <NavItem>
                             <NavLink
-                                className={classnames({ active: this.state.activeTabResults === '1' })}
-                                onClick={() => { this.toggleResults('1'); }}>
+                                className={classnames({ active: this.state.activeTabResults === "1" })}
+                                onClick={() => { this.toggleResults("1"); }}>
                                 Summary
                             </NavLink>
                         </NavItem>
 
                         <NavItem>
                             <NavLink
-                                className={classnames({ active: this.state.activeTabResults === '2' })}
-                                onClick={() => { this.toggleResults('2', this.populateLeagueFixtures()); }}
+                                className={classnames({ active: this.state.activeTabResults === "2" })}
+                                onClick={() => { this.toggleResults("2", this.populateLeagueFixtures()); }}
                             > Results
                             </NavLink>
                         </NavItem>
@@ -161,25 +161,25 @@ export class LeagueInfoComponent extends Component {
 
                     <TabContent activeTab={this.state.activeTabResults}>
                         <TabPane tabId="1">
-                            {this.state.activeTabResults == '1'
+                            {this.state.activeTabResults === "1"
                                 ? <div>
                                     <Nav tabs>
                                         <NavItem>
                                             <NavLink
-                                                className={classnames({ active: this.state.activeTabSummary === '1' })}
-                                                onClick={() => { this.toggleSummary('1'); }}
+                                                className={classnames({ active: this.state.activeTabSummary === "1" })}
+                                                onClick={() => { this.toggleSummary("1"); }}
                                             > Standings
                                             </NavLink>
                                         </NavItem> { /* ToggleSummary 1*/}
 
-                                        {(this.state.leagueTopScorers.response === undefined || this.state.leagueTopScorers.response.length == 0) ?
+                                        {(this.state.leagueTopScorers.response === undefined || this.state.leagueTopScorers.response.length === 0) ?
 
                                             null :
 
                                             <NavItem> { /* ToggleSummary 2*/}
                                                 <NavLink
-                                                    className={classnames({ active: this.state.activeTabSummary === '2' })}
-                                                    onClick={() => { this.toggleSummary('2', this.populateLeagueTopScorers()); }}
+                                                    className={classnames({ active: this.state.activeTabSummary === "2" })}
+                                                    onClick={() => { this.toggleSummary("2", this.populateLeagueTopScorers()); }}
                                                 > Top Scorers
                                                 </NavLink>
                                             </NavItem>
@@ -188,13 +188,13 @@ export class LeagueInfoComponent extends Component {
 
                                     <TabContent activeTab={this.state.activeTabSummary}>
                                         <TabPane tabId="1">
-                                            {this.state.activeTabSummary == '1'
+                                            {this.state.activeTabSummary === "1"
                                                 ? <div>{this.renderLeagueStandings()}</div>
                                                 : null}
                                         </TabPane> { /* TabId 1*/}
 
                                         <TabPane tabId="2"> { /* TabId 2*/}
-                                            {this.state.activeTabSummary == '2' && (this.state.loadingTopScorers
+                                            {this.state.activeTabSummary === "2" && (this.state.loadingTopScorers
                                                 ? <div className="spinner"><Spinner color="primary" /></div>
                                                 : <div>{this.renderLeagueTopScorers()}</div>)}
                                         </TabPane>
@@ -204,7 +204,7 @@ export class LeagueInfoComponent extends Component {
                         </TabPane>
 
                         <TabPane tabId="2">
-                            {this.state.activeTabResults == '2' && (this.state.loadingFixtures
+                            {this.state.activeTabResults === "2" && (this.state.loadingFixtures
                                 ? <div className="spinner"><Spinner color="primary" /></div>
                                 : <div>{this.renderLeagueFixtures()}</div>)}
                         </TabPane>
@@ -279,7 +279,7 @@ export class LeagueInfoComponent extends Component {
     renderLeagueTopScorers() {
         return (
             <Container>
-                {(this.state.leagueTopScorers.response === undefined || this.state.leagueTopScorers.response.length == 0) ?
+                {(this.state.leagueTopScorers.response === undefined || this.state.leagueTopScorers.response.length === 0) ?
 
                     <div>NO DATA</div>
 
@@ -288,7 +288,7 @@ export class LeagueInfoComponent extends Component {
                         <div key={leagueData.player.name}>
 
                             {leagueData.statistics.map(stats =>
-                                <Row>
+                                <Row key={stats.team.id}>
                                     <Col>
                                         {index + 1}
                                     </Col>
@@ -296,7 +296,7 @@ export class LeagueInfoComponent extends Component {
                                         {leagueData.player.name}
                                     </Col>
                                     <Col>
-                                        {stats.team.logo}
+                                        <img alt="" className="img_temp" src={stats.team.logo} />
                                         {stats.team.name}
                                     </Col>
                                     <Col>

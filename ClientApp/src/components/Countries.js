@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Link, useParams  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Spinner, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
+import { ErrorPage } from './ErrorPage';
 
 export const displayName = "Countries";
 
@@ -8,24 +9,24 @@ export class Countries extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { countries: [], loading: true };
+        this.state = { countries: [], countriesLoading: true };
     }
 
     componentDidMount() {
         this.populateCountriesData();
     }
 
-    renderCountriesTable(countries) {
+    renderCountriesTable() {
         return (
             <Container>
                 <Row>
-                    {countries.map(country =>
-                        <Col className="table-div" xs="3">
+                    {this.state.countries.map(country =>
+                        <Col key={country.name} className="table-div" xs="3">
                             <Link to={`/countries/${country.name}`}>
                                 <ListGroup horizontal className="list-group-items">
-                                    <ListGroupItem className="d-flex align-items-center" key={country.name} tag="a" href="">
+                                    <ListGroupItem className="d-flex align-items-center" key={country.name}>
                                         <div className="league-flag">
-                                            <img className="country-flag" src={country.flag} />
+                                            <img alt="" className="country-flag" src={country.flag} />
                                         </div>
 
                                         <div>
@@ -42,14 +43,18 @@ export class Countries extends Component {
     }
 
     render() {
-        let contents = this.state.loading
-            ? <div className="spinner"><Spinner color="primary" /></div>
-            : this.renderCountriesTable(this.state.countries, this.props.match.url);
+        if (this.state.countriesLoading) {
+            return <div className="spinner"><Spinner color="primary" /></div>
+        }
+
+        if (!this.state.countries) {
+            return <ErrorPage />;
+        }
 
         return (
             <div>
                 <h1 id="tabelLabel">Countries</h1>
-                {contents}
+                {this.renderCountriesTable()}
             </div>
         );
     }
@@ -57,6 +62,6 @@ export class Countries extends Component {
     async populateCountriesData() {
         const response = await fetch('api/Countries');
         const data = await response.json();
-        this.setState({ countries: data, loading: false });
+        this.setState({ countries: data, countriesLoading: false });
     }
 }

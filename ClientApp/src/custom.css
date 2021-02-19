@@ -25,7 +25,7 @@ code {
     width: 100%;
 }
 
-.list-group-item:link {
+.leagues a {
     width: 100%;
     text-decoration: none;
 }

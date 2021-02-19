@@ -1,7 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { ErrorPage } from './ErrorPage';
-import { withRouter } from "react-router";
-import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Spinner, Container, Row, Col } from 'reactstrap';
 import { Link } from "react-router-dom";
 
 export const displayName = "Leagues";
@@ -10,28 +9,25 @@ export class Leagues extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { leagues: [], loading: true };
+        this.state = { leagues: [], leaguesLoading: true };
     }
 
     componentDidMount() {
         this.populateLeaguesData();
     }
 
-    renderLeaguesTable(/*leagues, url*/) {
+    renderLeaguesTable() {
         return (
             <Container>
                 <Row>
                     {this.state.leagues.map(leagueData =>
-                        <Col className="table-div" xs="3">
+
+                        <Col key={leagueData.leagueId} className="table-div leagues" xs="3">
                             <Link to={`/countries/${this.props.match.params.countryName}/${leagueData.leagueId}/${leagueData.seasonYear}`}>
-                                <ListGroup horizontal className="list-group-items">
-                                    <ListGroupItem className="d-flex align-items-center" key={leagueData.leagueName} tag="a" href="">
-                                        <div className="league-flag">
-                                            <img src={leagueData.leagueLogo} />
-                                        </div>
-                                        <div className="football-normal-text">{leagueData.leagueName}</div>
-                                    </ListGroupItem>
-                                </ListGroup>
+                                <div className="league-flag">
+                                    <img alt="" src={leagueData.leagueLogo} />
+                                </div>
+                                <div className="football-normal-text">{leagueData.leagueName}</div>
                             </Link>
                         </Col>
                     )}
@@ -41,7 +37,7 @@ export class Leagues extends Component {
     }
 
     render() {
-        if (this.state.loading) {
+        if (this.state.leaguesLoading) {
             return <div className="spinner"><Spinner color="primary" /></div>
         }
 
@@ -56,7 +52,7 @@ export class Leagues extends Component {
                     <div className="football-nav-link separator">&gt;</div>
                     <div className="football-nav-link">{this.props.match.params.countryName}</div>
                 </div>
-                {this.renderLeaguesTable(/*this.state.leagues, this.props.match.params.countryName*/)}
+                {this.renderLeaguesTable()}
             </div>
         );
     }
@@ -66,6 +62,6 @@ export class Leagues extends Component {
         const countryName = this.props.match.params.countryName;
         const response = await fetch(`/api/Leagues/${countryName}`);
         const data = await response.json();
-        this.setState({ leagues: data, loading: false });
+        this.setState({ leagues: data, leaguesLoading: false });
     }
 }
