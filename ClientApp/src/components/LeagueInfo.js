@@ -1,46 +1,43 @@
 ﻿import React, { Component } from 'react';
 import { ErrorPage } from './ErrorPage';
-//import { withRouter } from "react-router";
-import { Form, FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalHeader, ModalBody, Spinner, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
+import { withRouter } from "react-router";
+import { TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalHeader, ModalBody, Spinner, ListGroup, ListGroupItem, Container, Row, Col } from 'reactstrap';
 import { Link } from "react-router-dom";
 import classnames from 'classnames';
 
-export const displayName = "LeagueInfo";
+//export const displayName = "LeagueInfo";
 
-export class LeagueInfo extends Component {
+export class LeagueInfoComponent extends Component {
+    seasonYears = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020];
+
+    initialState = {
+        leagueStandings: [],
+        leagueTopScorers: [],
+        leagueFixtures: [],
+        leagueTeamSquad: [],
+        loadingStandings: true,
+        loadingTopScorers: true,
+        loadingFixtures: true,
+        loadingTeamSquad: true,
+        activeTabSummary: '1',
+        activeTabResults: '1',
+        modal: false,
+        leagueId: null,
+        season: null,
+        teamId: null,
+        teamName: ""
+    }
 
     constructor(props) {
         super(props);
-        this.state = {
-            leagueStandings: [],
-            leagueTopScorers: [],
-            leagueFixtures: [],
-            leagueTeamSquad: [],
-            loadingStandings: true,
-            loadingTopScorers: true,
-            loadingFixtures: true,
-            loadingTeamSquad: true,
-            activeTabSummary: '1',
-            activeTabResults: '1',
-            modal: false,
-            leagueId: null,
-            season: null,
-            teamId: null,
-            teamName: "",
-            dropdownOpen: false,
-
-        };
+        this.state = this.initialState;
         this.toggleSummary = this.toggleSummary.bind(this);
         this.toggleResults = this.toggleResults.bind(this);
         this.toggleTeamInfo = this.toggleTeamInfo.bind(this);
         this.toggleDropdown = this.toggleDropdown.bind(this);
-        //this.renderLeagueTeamSquad = this.renderLeagueTeamSquad.bind(this);
-        //this.renderLeagueFixtures = this.renderLeagueFixtures.bind(this);
-        //this.renderLeagueTopScorers = this.renderLeagueTopScorers.bind(this);
-        //this.renderLeagueStandings = this.renderLeagueStandings.bind(this);
-        //this.renderLeagueInfoTable = this.renderLeagueInfoTable.bind(this);
+        this.changeYear = this.changeYear.bind(this);
     }
-
+   
     toggleDropdown() {
         this.setState(prevState => ({
             dropdownOpen: !prevState.dropdownOpen
@@ -87,11 +84,23 @@ export class LeagueInfo extends Component {
         }
     }
 
+    changeYear(countryName, leagueId, year) {
+        this.props.history.push(`/countries/${countryName}/${leagueId}/${year}`);
+    }
+
     componentDidMount() {
         this.populateLeagueStandings();
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.seasonYear !== prevProps.seasonYear) {
+            this.setState({ ...this.initialState });
+            this.populateLeagueStandings();
+        }
+    }
+
     renderLeagueInfoTable() {
+        
         return (
             <Container>
                 {this.state.leagueStandings.response.map(leagueData =>
@@ -132,23 +141,42 @@ export class LeagueInfo extends Component {
                         </NavItem>
 
                         <NavItem>
+                            
+                            <select id="seasonValue" onChange={event => this.changeYear(this.props.countryName, this.props.leagueId, event.target.value)}/* value={this.props.seasonYear}*/>
+                                {this.seasonYears.map(year => {
+                                    if (year == this.props.seasonYear) {
+                                        return (<option disabled="true" selected="true" value={year}>{year}</option>)
+                                    }
+                                    else { return <option value={year} /*to={`/countries/${this.props.countryName}/${this.props.leagueId}/${year}`}*/> {year}</option> }
+                                }
+                                )}
+                            </select>
+
+                            {/*
+                                <div>  
+                                    <select id="seasonYear" onChange={this.change} value={this.props.seasonYear}>
+                                    <option value="select">Select</option>
+                                    <option value="Java">Java</option>
+                                    <option value="C++">C++</option>
+                                </select>
+                                <p></p>
+                                <p>{this.state.value}</p>
+                            </div>
 
                             <FormGroup>
-                                <Link to={`/countries/${this.props.match.params.countryName}/${this.props.match.params.leagueId}/${2010}`}>{this.props.match.params.seasonYear}</Link>
                                 <Label for="exampleSelect">Select</Label>
                                 <Input type="select" name="select" id="exampleSelect">
-                                    <option>2011</option>
-                                    <option>2012</option>
-                                    <option>2013</option>
-                                    <option>2014</option>
-                                    <option>2015</option>
-                                    <option>2016</option>
-                                    <option>2017</option>
-                                    <option>2018</option>
-                                    <option>2019</option>
-                                    <option>2020</option>
+                                    <option to={`/countries/${this.props.countryName}/${this.props.leagueId}/${2010}`}>2010</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
                                 </Input>
                             </FormGroup>
+
+                            <div>
+                                <Link to={`/countries/${this.props.countryName}/${this.props.leagueId}/${2010}`}>2010</Link>
+                            </div> */}
 
                         </NavItem>
 
@@ -301,7 +329,7 @@ export class LeagueInfo extends Component {
                                         {match.date}
                                     </Col>
                                     <Col>
-                                        <div class="float_fixture">{match.teams.home.name}</div>
+                                        <div className="float_fixture">{match.teams.home.name}</div>
                                         <div className="img_temp float_fixture"><img src={match.teams.home.logo} /></div>
                                     </Col>
                                     <Col>
@@ -309,7 +337,7 @@ export class LeagueInfo extends Component {
                                     </Col>
                                     <Col>
                                         <div className="img_temp float_fixture"><img src={match.teams.away.logo} /></div>
-                                        <div class="float_fixture">{match.teams.away.name}</div>
+                                        <div className="float_fixture">{match.teams.away.name}</div>
                                     </Col>
                                 </Row>
                             )}
@@ -321,7 +349,6 @@ export class LeagueInfo extends Component {
     }
 
     renderLeagueTeamSquad() {
-        console.log(this.state)
         return (
             <Container>
                 {
@@ -372,7 +399,7 @@ export class LeagueInfo extends Component {
                 <div className="football-nav">
                     <Link to="/countries"><div className="football-nav-link">Countries</div></Link>
                     <div className="football-nav-link separator">&gt;</div>
-                    <div className="football-nav-link">{this.props.match.params.countryName}</div>
+                    <div className="football-nav-link">{this.props.countryName}</div>
                 </div>
                 {this.renderLeagueInfoTable()}
             </div>
@@ -381,24 +408,24 @@ export class LeagueInfo extends Component {
 
 
     async populateLeagueStandings() {
-        const leagueId = this.props.match.params.leagueId;
-        const seasonYear = this.props.match.params.seasonYear;
+        const leagueId = this.props.leagueId;
+        const seasonYear = this.props.seasonYear;
         const response = await fetch(`/api/League/standings/${leagueId}/${seasonYear}`);
         const data = await response.json();
         this.setState({ leagueStandings: data, loadingStandings: false });
     }
 
     async populateLeagueTopScorers() {
-        const leagueId = this.props.match.params.leagueId;
-        const seasonYear = this.props.match.params.seasonYear;
+        const leagueId = this.props.leagueId;
+        const seasonYear = this.props.seasonYear;
         const response = await fetch(`/api/League/top-scorers/${leagueId}/${seasonYear}`);
         const data = await response.json();
         this.setState({ leagueTopScorers: data, loadingTopScorers: false });
     }
 
     async populateLeagueFixtures() {
-        const leagueId = this.props.match.params.leagueId;
-        const seasonYear = this.props.match.params.seasonYear;
+        const leagueId = this.props.leagueId;
+        const seasonYear = this.props.seasonYear;
         const response = await fetch(`/api/League/fixtures/${leagueId}/${seasonYear}`);
         const data = await response.json();
         this.setState({ leagueFixtures: data, loadingFixtures: false });
@@ -410,3 +437,5 @@ export class LeagueInfo extends Component {
         this.setState({ leagueTeamSquad: data, loadingTeamSquad: false });
     }
 }
+
+export const LeagueInfo = withRouter(LeagueInfoComponent);

@@ -19,7 +19,15 @@ export default class App extends Component {
                     <Route exact path='/' component={Home} />
                     <Route exact path='/countries' component={Countries} />
                     <Route exact path='/countries/:countryName' component={Leagues} />
-                    <Route path='/countries/:countryName/:leagueId/:seasonYear' component={LeagueInfo} />
+                    <Route
+                        path='/countries/:countryName/:leagueId/:seasonYear'
+                        //component={LeagueInfo}
+                        render={routeProps => <LeagueInfo
+                            leagueId={routeProps.match.params.leagueId}
+                            seasonYear={routeProps.match.params.seasonYear}
+                            countryName={routeProps.match.params.countryName}
+                         />}
+                    />
                     <Route path='*' component={ErrorPage} />
                 </Switch>
             </Layout>

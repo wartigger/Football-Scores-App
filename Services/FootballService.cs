@@ -54,9 +54,13 @@ namespace Football_Scores_App.Services
         {
             LeagueStandingsDto.Root leagueStandings = new LeagueStandingsDto.Root();
 
-            if (leagueId == 39)
+            if (leagueId == 39 && season == 2020)
             {
                 var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602ab82599ac3873a349fc86");
+                leagueStandings = JsonConvert.DeserializeObject<LeagueStandingsDto.Root>(responseLeague);
+            }
+            else if (leagueId == 39 && season == 2010) {
+                var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602fa4bebd6b755d0199ae21");
                 leagueStandings = JsonConvert.DeserializeObject<LeagueStandingsDto.Root>(responseLeague);
             }
 
@@ -71,12 +75,9 @@ namespace Football_Scores_App.Services
 
             var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
-            if (leagueId == 39 && season == 2020)
-            {
-                var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602c342f0665b21b00b85d12");
-                leagueTopScorers = JsonConvert.DeserializeObject<LeagueTopScorersDto.Root>(responseLeague, settings);
-            }
-
+            var responseLeague = await testClient.httpClient.GetStringAsync("https://api.jsonbin.io/b/602c342f0665b21b00b85d12");
+            leagueTopScorers = JsonConvert.DeserializeObject<LeagueTopScorersDto.Root>(responseLeague, settings);
+            
             //var responseLeagues = await client.httpClient.GetStringAsync("https://api-football-v1.p.rapidapi.com/v3/players/topscorers?league=39&season=2020");
 
             return leagueTopScorers;
