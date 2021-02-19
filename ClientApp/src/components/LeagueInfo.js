@@ -90,12 +90,14 @@ export class LeagueInfoComponent extends Component {
 
     componentDidMount() {
         this.populateLeagueStandings();
+        this.populateLeagueTopScorers();
     }
 
     componentDidUpdate(prevProps) {
         if (this.props.seasonYear !== prevProps.seasonYear) {
             this.setState({ ...this.initialState });
             this.populateLeagueStandings();
+            this.populateLeagueTopScorers();
         }
     }
 
@@ -111,7 +113,7 @@ export class LeagueInfoComponent extends Component {
                             <ListGroup horizontal>
                                 <ListGroupItem className="d-flex align-items-center" key={leagueData.league.name}>
                                     <div>
-                                        <img src={leagueData.league.logo} />
+                                        <img alt="" src={leagueData.league.logo} />
                                     </div>
                                 </ListGroupItem>
                             </ListGroup>
@@ -143,12 +145,12 @@ export class LeagueInfoComponent extends Component {
                         </NavItem>
 
                         <NavItem>  
-                            <select id="seasonValue" onChange={event => this.changeYear(this.props.countryName, this.props.leagueId, event.target.value)}>
+                            <select id="seasonValue" onChange={event => this.changeYear(this.props.countryName, this.props.leagueId, event.target.value)} value={this.props.seasonYear}>
                                 {this.seasonYears.map(year => {
-                                    if (year == this.props.seasonYear) {
-                                        return (<option disabled="true" selected="true" value={year}>{year}</option>)
+                                    if (year === this.props.seasonYear) {
+                                        return (<option key={year} disabled={true} value={year}>{year}</option>)
                                     }
-                                    else { return <option value={year}> {year}</option> }
+                                    else { return <option key={year} value={year}> {year}</option> }
                                 }
                                 )}
                             </select>
@@ -169,14 +171,19 @@ export class LeagueInfoComponent extends Component {
                                             > Standings
                                             </NavLink>
                                         </NavItem> { /* ToggleSummary 1*/}
-                                        
-                                        <NavItem> { /* ToggleSummary 2*/}
-                                            <NavLink
-                                                className={classnames({ active: this.state.activeTabSummary === '2' })}
-                                                onClick={() => { this.toggleSummary('2', this.populateLeagueTopScorers()); }}
-                                            > Top Scorers
-                                            </NavLink>
-                                        </NavItem>
+
+                                        {(this.state.leagueTopScorers.response === undefined || this.state.leagueTopScorers.response.length == 0) ?
+
+                                            null :
+
+                                            <NavItem> { /* ToggleSummary 2*/}
+                                                <NavLink
+                                                    className={classnames({ active: this.state.activeTabSummary === '2' })}
+                                                    onClick={() => { this.toggleSummary('2', this.populateLeagueTopScorers()); }}
+                                                > Top Scorers
+                                                </NavLink>
+                                            </NavItem>
+                                        }
                                     </Nav>
 
                                     <TabContent activeTab={this.state.activeTabSummary}>
@@ -227,7 +234,8 @@ export class LeagueInfoComponent extends Component {
                                                 {teamStats.rank}
                                             </Col>
                                             <Col>
-                                                <Link onClick={() => this.toggleTeamInfo(leagueData.league.id, leagueData.league.season, teamStats.team)}>{teamStats.team.name}</Link>
+                                                <img className="img_temp float_fixture" alt="" src={teamStats.team.logo} />
+                                                <p onClick={() => this.toggleTeamInfo(leagueData.league.id, leagueData.league.season, teamStats.team)}>{teamStats.team.name}</p>
                                             </Col>
                                             <Col>
                                                 {teamStats.all.played}
@@ -323,13 +331,13 @@ export class LeagueInfoComponent extends Component {
                                     </Col>
                                     <Col>
                                         <div className="float_fixture">{match.teams.home.name}</div>
-                                        <div className="img_temp float_fixture"><img src={match.teams.home.logo} /></div>
+                                        <div className="img_temp float_fixture"><img alt="" src={match.teams.home.logo} /></div>
                                     </Col>
                                     <Col>
                                         <b>{match.goals.home} - {match.goals.away}</b>
                                     </Col>
                                     <Col>
-                                        <div className="img_temp float_fixture"><img src={match.teams.away.logo} /></div>
+                                        <div className="img_temp float_fixture"><img alt="" src={match.teams.away.logo} /></div>
                                         <div className="float_fixture">{match.teams.away.name}</div>
                                     </Col>
                                 </Row>
