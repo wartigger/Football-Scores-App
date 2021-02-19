@@ -131,7 +131,7 @@ namespace Football_Scores_App.Services
                         goals = data.Statistics[0].Goals.Total,
                         yellow = data.Statistics[0].Cards.Yellow,
                         red = data.Statistics[0].Cards.Red
-                    })/*.Where(x => x.appearences > 0)*/,
+                    }),
                 }).Where(a => a.data.Any(b=> b.appearences > 0));
 
             return SquadByPosition;
