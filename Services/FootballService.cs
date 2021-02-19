@@ -151,8 +151,6 @@ namespace Football_Scores_App.Services
 
 
 
-
-
     public class Client
     {
         public HttpClient httpClient;
